@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="{{ url_for('static', filename='logo.jpeg') }}" type="image/png">
+<title>Fees - CMIS</title>
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+    margin: 0; padding: 0; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding-top: 50px;
+  }
+  .container {
+    width: 90%; max-width: 900px;
+    background: rgba(255,255,255,0.95); border-radius: 15px; box-shadow: 0 8px 25px rgba(0,0,0,0.3); padding: 30px; animation: fadeIn 1s ease-in-out;
+  }
+  h2 { 
+    text-align:center; margin-bottom: 25px; 
+    background: linear-gradient(90deg,#00c6ff,#0072ff); 
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .forms-container {
+    display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;
+  }
+  form {
+    flex: 1 1 45%;
+    display:flex; flex-direction: column; gap: 10px;
+    background: rgba(0,0,0,0.03); padding: 15px; border-radius: 12px;
+  }
+  label { display:flex; flex-direction:column; font-size:0.95rem; }
+  input { margin-top:5px; padding:10px 15px; border:none; border-radius:10px; outline:none; background: rgba(0,0,0,0.05); font-size:1rem;}
+  button { padding:12px 25px; background:linear-gradient(90deg,#00c6ff,#0072ff); color:#fff; border:none; border-radius:12px; cursor:pointer; transition:0.3s;}
+  button:hover { transform:scale(1.05); background:linear-gradient(90deg,#0072ff,#00c6ff); box-shadow:0 0 15px rgba(0,198,255,0.7);}
+  table { width:100%; border-collapse:collapse; border-radius:10px; overflow:hidden; margin-top:20px;}
+  th, td { padding:12px 15px; text-align:center; border-bottom:1px solid rgba(0,0,0,0.1);}
+  th { background: #0072ff; color:#fff;}
+  tbody tr { background: rgba(0,0,0,0.05); transition:0.3s;}
+  tbody tr:hover { background: rgba(0,198,255,0.2); transform:scale(1.02); box-shadow:0 0 10px rgba(0,198,255,0.3);}
+  @keyframes fadeIn { from { opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
+</style>
+</head>
+<body>
+<div class="container">
+  <h2>Fees Details</h2>
+
+  <div class="forms-container">
+    <!-- Search Form -->
+    <form method="POST">
+      <h3>Search Student</h3>
+      <label>Roll No <input type="text" name="roll"></label>
+      <label>Name <input type="text" name="name"></label>
+      <button type="submit" name="search">Search Fees</button>
+    </form>
+
+    <!-- Payment Form -->
+    <form method="POST">
+      <h3>Pay Fee Installment</h3>
+      <label>Roll No <input type="text" name="pay_roll" required></label>
+      <label>Amount <input type="number" name="pay_amount" required></label>
+      <button type="submit" name="pay">Pay Now</button>
+    </form>
+  </div>
+
+ {% if students %}
+<table>
+  <thead>
+    <tr>
+      <th>Student</th>
+      <th>Roll No</th>
+      <th>Email</th>
+      <th>Total Fee</th>
+      <th>Paid Fee</th>
+      <th>Balance</th>
+      <th>Last Payment</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for s in students %}
+    <tr>
+      <td>{{ s[0] }}</td>
+      <td>{{ s[1] }}</td>
+      <td>{{ s[2] }}</td>
+      <td>₹{{ s[3] }}</td>
+      <td>₹{{ s[4] }}</td>
+      <td>₹{{ s[5] }}</td>
+      <td>{% if s[6] %}{{ s[6].strftime('%d-%m-%Y %H:%M') }}{% else %}No Payments{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+
+</div>
+</body>
+</html>

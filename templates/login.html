@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" href="{{ url_for('static', filename='logo.jpeg') }}" type="image/png">
+  <title>Login</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    section.login-card {
+      width: 380px;
+      padding: 40px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+      text-align: center;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    section.login-card h2 {
+      font-size: 2rem;
+      margin-bottom: 30px;
+      background: linear-gradient(90deg, #00c6ff, #0072ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 1px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      align-items: center;
+    }
+
+    label {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      font-size: 0.95rem;
+      color: #fff;
+      text-align: left;
+    }
+
+    input {
+      margin-top: 5px;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 10px;
+      outline: none;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      background: rgba(0, 198, 255, 0.3);
+      box-shadow: 0 0 10px rgba(0, 198, 255, 0.6);
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px 25px;
+      background: linear-gradient(90deg, #00c6ff, #0072ff);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(90deg, #0072ff, #00c6ff);
+      box-shadow: 0 0 15px rgba(0, 198, 255, 0.7);
+    }
+
+    a.register-link {
+      display: block;
+      margin-top: 15px;
+      font-size: 0.9rem;
+      color: #00c6ff;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    a.register-link:hover {
+      text-decoration: underline;
+      color: #0072ff;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Optional: Floating background particles */
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(0, 198, 255, 0.3);
+      animation: float 5s infinite ease-in-out;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); opacity: 0.5; }
+      50% { transform: translateY(-20px); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <section class="login-card">
+    <h2>Login</h2>
+    <form id="loginForm"  action="/"  method="post">
+      <label>Email
+        <input type="email" name="email" required>
+      </label>
+      <label>Password
+        <input type="password" name="password" required>
+      </label>
+      <button type="submit">Login</button>
+    </form> 
+
+    <a href="/register" class="register-link">Don't have an account? Register here</a>
+  </section>
+
+  <script>
+  // ---------------- BACKGROUND PARTICLES ----------------
+  for (let i = 0; i < 25; i++) {
+    const dot = document.createElement("div");
+    dot.classList.add("particle");
+    dot.style.width = dot.style.height = Math.random() * 6 + "px";
+    dot.style.top = Math.random() * 100 + "%";
+    dot.style.left = Math.random() * 100 + "%";
+    dot.style.animationDuration = 3 + Math.random() * 4 + "s";
+    document.body.appendChild(dot);
+  }
+
+  // ---------------- LOGIN FORM LOGIC ----------------
+  const form = document.getElementById("loginForm");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault(); // stop normal form reload
+
+    const email = form.email.value.trim();
+    const password = form.password.value.trim();
+
+    if (!email || !password) {
+      alert("Please fill in all fields ❌");
+      return;
+    }
+
+    try {
+      // Send form data to Flask (POST /)
+      const response = await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ email, password })
+      });
+
+      // If Flask redirects to dashboard (302 Found), follow it manually
+      if (response.redirected) {
+        window.location.href = response.url;
+        return;
+      }
+
+      const text = await response.text();
+
+      // Check response content
+      if (text.includes("Invalid email") || text.includes("danger")) {
+        alert("Invalid email or password ❌");
+      } else if (text.includes("dashboard") || text.includes("Welcome")) {
+        alert(`Welcome, ${email}! Login successful ✅`);
+        window.location.href = "/dashboard";
+      } else {
+        alert("Unexpected response. Please try again.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Login request failed ❌");
+    }
+  });
+</script>
+
+
+</body>
+</html>

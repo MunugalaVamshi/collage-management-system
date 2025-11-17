@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Marks</title>
+  <link rel="icon" href="{{ url_for('static', filename='logo.jpeg') }}" type="image/png">
+
+  <style>
+    body{font-family:Poppins, sans-serif;background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);color:#fff;min-height:100vh;margin:0;padding-bottom:40px}
+    h1{text-align:center;margin-top:20px}
+
+    .card{
+      max-width:900px;
+      margin:25px auto;
+      padding:30px;
+      background:rgba(255,255,255,0.08);
+      border-radius:20px;
+    }
+
+    label{display:flex;flex-direction:column;width:45%;min-width:200px;margin:8px}
+    input{
+      padding:10px;border-radius:10px;border:none;
+      background:rgba(255,255,255,0.12);color:#fff;
+    }
+
+    button{
+      padding:12px 25px;border-radius:12px;
+      background:linear-gradient(90deg,#00c6ff,#0072ff);
+      border:none;color:#fff;cursor:pointer;
+    }
+
+    table{width:100%;border-collapse:collapse;margin-top:20px}
+    th,td{padding:12px 15px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.12)}
+    thead{background:rgba(0,198,255,0.12)}
+
+    .student-details{
+      padding:12px;border-radius:8px;
+      background:rgba(255,255,255,0.04);margin-top:20px;
+    }
+
+    a{color:#00c6ff}
+    .flashes{max-width:900px;margin:15px auto}
+    .flash-success{background:rgba(0,200,100,0.12);padding:10px;border-radius:8px}
+    .flash-danger{background:rgba(255,50,50,0.08);padding:10px;border-radius:8px}
+  </style>
+</head>
+
+<body>
+
+  <h1>Student Marks</h1>
+
+  
+
+  <!-- ADD MARKS -->
+  <section class="card">
+    <h2>Add Student Marks</h2>
+
+    <form action="{{ url_for('add_marks') }}" method="post" style="display:flex;flex-wrap:wrap;">
+      <label>Roll No:
+        <input type="text" name="roll" required>
+      </label>
+
+      <label>Course:
+        <input type="text" name="course" required>
+      </label>
+
+      <label>Branch:
+        <input type="text" name="branch" required>
+      </label>
+
+      <label>Marks:
+        <input type="number" name="marks" min="0" max="100" required>
+      </label>
+
+      <div style="width:100%;text-align:center;margin-top:15px">
+        <button type="submit">Add Marks</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- SEARCH MARKS -->
+  <section class="card">
+    <h2>Search Student Marks</h2>
+
+    <form action="{{ url_for('marks_page') }}" method="post" style="display:flex;flex-wrap:wrap;">
+      <label>Roll No
+        <input type="text" name="roll" required>
+      </label>
+
+      <label>Email
+        <input type="email" name="email" required>
+      </label>
+
+      <div style="width:100%;text-align:center;margin-top:10px">
+        <button type="submit">Search</button>
+      </div>
+    </form>
+  </section>
+
+ {% if student %}
+<section class="card">
+
+  {% if student %}
+    <h4>👤 Name: {{ student[1] }}</h4>
+    <h4>📘 Roll No: {{ student[0] }}</h4>
+{% else %}
+    <p style="color:red;">No student data found.</p>
+{% endif %}
+
+
+  <table>
+      <thead>
+          <tr>
+              <th>Course</th>
+              <th>Branch</th>
+              <th>Marks</th>
+              <th>Grade</th>
+              <th>Message</th>
+          </tr>
+      </thead>
+      <tbody>
+
+      {% for row in marks %}
+          <tr>
+              <td>{{ row.course }}</td>
+              <td>{{ row.branch }}</td>
+              <td>{{ row.marks }}</td>
+              <td>{{ row.grade }}</td>
+              <td>{{ row.message }}</td>
+          </tr>
+      {% endfor %}
+
+      </tbody>
+  </table>
+
+  <!-- Summary -->
+  {% if summary %}
+  <div class="student-details" style="margin-top:20px;">
+      <h3>Total Marks: {{ summary.total }}</h3>
+      <h3>Percentage: {{ summary.percentage }}%</h3>
+      <h3>Result: {{ summary.result }}</h3>
+  </div>
+  {% endif %}
+
+</section>
+{% endif %}
+
+
+</body>
+</html>
+

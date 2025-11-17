@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" href="{{ url_for('static', filename='logo.jpeg') }}" type="image/png">
+  <title>Register</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    section.register-card {
+      width: 400px;
+      padding: 40px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+      text-align: center;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    section.register-card h2 {
+      font-size: 2rem;
+      margin-bottom: 30px;
+      background: linear-gradient(90deg, #00c6ff, #0072ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 1px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      align-items: center;
+    }
+
+    label {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      font-size: 0.95rem;
+      color: #fff;
+      text-align: left;
+    }
+
+    input, select {
+      margin-top: 5px;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 10px;
+      outline: none;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    input:focus, select:focus {
+      background: rgba(0, 198, 255, 0.3);
+      box-shadow: 0 0 10px rgba(0, 198, 255, 0.6);
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px 25px;
+      background: linear-gradient(90deg, #00c6ff, #0072ff);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(90deg, #0072ff, #00c6ff);
+      box-shadow: 0 0 15px rgba(0, 198, 255, 0.7);
+    }
+
+    a.login-link {
+      display: block;
+      margin-top: 15px;
+      font-size: 0.9rem;
+      color: #00c6ff;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+
+    a.login-link:hover {
+      text-decoration: underline;
+      color: #0072ff;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Floating particles background */
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(0, 198, 255, 0.3);
+      animation: float 5s infinite ease-in-out;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); opacity: 0.5; }
+      50% { transform: translateY(-20px); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <section class="register-card">
+    <h2>Create Account</h2>
+    <form id="registerForm" action="/register" method="POST">
+      <label for="roll">Roll Number
+        <input type="text" id="roll" name="roll" placeholder="Enter Roll Number" required>
+      </label>
+
+      <label for="name">Full Name
+        <input type="text" id="name" name="name" placeholder="Enter Full Name" required>
+      </label>
+
+      <label for="email">Email
+        <input type="email" id="email" name="email" placeholder="Enter Email" required>
+      </label>
+
+      <label for="password">Password
+        <input type="password" id="password" name="password" placeholder="Enter Password" required>
+      </label>
+
+      <label for="confirm">Confirm Password
+        <input type="password" id="confirm" name="confirm" placeholder="Re-enter Password" required>
+      </label>
+
+      <label for="branch">Branch
+        <input type="text" id="branch" name="branch" placeholder="Enter Branch" required>
+      </label>
+
+      <button type="submit">Register</button>
+    </form>
+
+    <a href="/" class="login-link">Already have an account? Login here</a>
+  </section>
+
+ <script>
+  // Floating background particles
+  for (let i = 0; i < 25; i++) {
+    const dot = document.createElement("div");
+    dot.classList.add("particle");
+    dot.style.width = dot.style.height = Math.random() * 6 + "px";
+    dot.style.top = Math.random() * 100 + "%";
+    dot.style.left = Math.random() * 100 + "%";
+    dot.style.animationDuration = 3 + Math.random() * 4 + "s";
+    document.body.appendChild(dot);
+  }
+
+  // Form validation
+  const form = document.getElementById("registerForm");
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const roll = form.roll.value.trim();
+    const name = form.name.value.trim();
+    const email = form.email.value.trim();
+    const password = form.password.value.trim();
+    const confirm = form.confirm.value.trim();
+    const branch = form.branch.value.trim();
+
+    if (!roll || !name || !email || !password || !confirm || !branch) {
+      alert("Please fill in all fields ❌");
+      return;
+    }
+
+    if (password !== confirm) {
+      alert("Passwords do not match ❌");
+      return;
+    }
+
+    // ✅ Fixed email regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      alert("Please enter a valid email ❌");
+      return;
+    }
+
+    fetch("/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        roll: roll,
+        name: name,
+        email: email,
+        password: password,
+        confirm: confirm,
+        branch: branch
+      })
+    })
+      .then(response => response.text())
+      .then(() => {
+        alert("Registration successful ✅ Redirecting to login...");
+        form.reset();
+        window.location.href = "/";
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        alert("Something went wrong ❌");
+      });
+  });
+</script>
+
+
+</body>
+</html>

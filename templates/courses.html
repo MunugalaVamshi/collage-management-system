@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="{{ url_for('static', filename='logo.jpeg') }}" type="image/png">
+  <title>Course Details</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+      margin: 0;
+      padding: 0;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    section.card {
+      max-width: 1000px;
+      margin: 60px auto;
+      padding: 40px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(10px);
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    section.card h2, section.card h3 {
+      text-align: center;
+      letter-spacing: 1px;
+      background: linear-gradient(90deg, #00c6ff, #0072ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      overflow: hidden;
+      border-radius: 10px;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    thead {
+      background: rgba(0, 198, 255, 0.2);
+    }
+
+    tbody tr {
+      background: rgba(255, 255, 255, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    tbody tr:hover {
+      background: rgba(0, 198, 255, 0.25);
+      transform: scale(1.02);
+      box-shadow: 0 0 15px rgba(0, 198, 255, 0.5);
+    }
+
+    form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    label {
+      display: flex;
+      flex-direction: column;
+      font-size: 0.95rem;
+      width: 30%;
+      min-width: 200px;
+      color: #fff;
+    }
+
+    input, textarea {
+      margin-top: 5px;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 10px;
+      outline: none;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      transition: all 0.3s ease;
+      resize: none;
+    }
+
+    input:focus, textarea:focus {
+      background: rgba(0, 198, 255, 0.3);
+      box-shadow: 0 0 10px rgba(0, 198, 255, 0.6);
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px 25px;
+      background: linear-gradient(90deg, #00c6ff, #0072ff);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      transform: scale(1.1);
+      background: linear-gradient(90deg, #0072ff, #00c6ff);
+      box-shadow: 0 0 15px rgba(0, 198, 255, 0.7);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      label { width: 100%; }
+      th, td { font-size: 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+  <section class="card">
+  <h2>Courses Offered</h2>
+
+  <form id="courseForm">
+    <input type="text" id="code" placeholder="Course Code" required>
+    <input type="text" id="name" placeholder="Course Name" required>
+    <input type="number" id="credits" placeholder="Credits" required>
+    <input type="text" id="faculty" placeholder="Faculty" required>
+    <input type="text" id="duration" placeholder="Duration" required>
+    <input type="text" id="description" placeholder="Description" required>
+    <button type="submit">Add Course</button>
+  </form>
+
+  <table id="courseTable">
+    <thead>
+      <tr>
+        <th>Code</th>
+        <th>Name</th>
+        <th>Credits</th>
+        <th>Faculty</th>
+        <th>Duration</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for course in courses %}
+      <tr>
+        <td>{{ course.code }}</td>
+        <td>{{ course.name }}</td>
+        <td>{{ course.credits }}</td>
+        <td>{{ course.faculty }}</td>
+        <td>{{ course.duration }}</td>
+        <td>{{ course.description }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<script>
+const tableBody = document.querySelector("#courseTable tbody");
+const form = document.querySelector("#courseForm");
+
+// Render table from existing rows (initial DB courses)
+function renderCourses() {
+  tableBody.querySelectorAll("tr").forEach(tr => tr.remove()); // Clear existing
+  const rows = {{ courses | tojson }};
+  rows.forEach((c, index) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${c.code}</td>
+      <td>${c.name}</td>
+      <td>${c.credits}</td>
+      <td>${c.faculty}</td>
+      <td>${c.duration}</td>
+      <td>${c.description}</td>`;
+    tableBody.appendChild(row);
+  });
+}
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const course = {
+    code: document.getElementById("code").value.trim(),
+    name: document.getElementById("name").value.trim(),
+    credits: document.getElementById("credits").value.trim(),
+    faculty: document.getElementById("faculty").value.trim(),
+    duration: document.getElementById("duration").value.trim(),
+    description: document.getElementById("description").value.trim()
+  };
+
+  // Send to Flask backend
+  const res = await fetch("/add_course", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(course)
+  });
+
+  const data = await res.json();
+  if(data.status === "success"){
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${course.code}</td>
+      <td>${course.name}</td>
+      <td>${course.credits}</td>
+      <td>${course.faculty}</td>
+      <td>${course.duration}</td>
+      <td>${course.description}</td>`;
+    tableBody.appendChild(row);
+    form.reset();
+  } else {
+    alert("Failed to add course.");
+  }
+});
+
+renderCourses();
+</script>
+</body>
+</html>
+

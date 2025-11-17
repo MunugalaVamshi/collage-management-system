@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="{{ url_for('static', filename='logo.jpeg') }}" type="image/png">
+  <title>Students - Scient Institute of Technology</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+      margin: 0;
+      padding: 0;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    section.card {
+      width: 850px;
+      margin: 40px auto;
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+      backdrop-filter: blur(10px);
+    }
+    h2 {
+      text-align: center;
+      background: linear-gradient(90deg, #00c6ff, #0072ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,0.2);
+      text-align: left;
+    }
+    th {
+      background: rgba(0,114,255,0.7);
+    }
+    tr:nth-child(even) {
+      background: rgba(255,255,255,0.1);
+    }
+  </style>
+</head>
+<body>
+  <section class="card">
+    <h2>Student Details</h2>
+
+    <!-- Students Table -->
+<table id="studentsTable">
+  <thead>
+    <tr>
+      <th>Roll No</th>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Branch</th>
+    </tr>
+  </thead>
+  <tbody id="studentsBody">
+    {% for student in students %}
+    <tr>
+      <td>{{ student[0] }}</td>
+      <td>{{ student[1] }}</td>
+      <td>{{ student[2] }}</td>
+      <td>{{ student[3] }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+  </section>
+</body>
+</html>
